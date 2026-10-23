@@ -1,0 +1,31 @@
+# Solo pruebas y validación del esquema. Sin despliegue, sin cron y sin secretos.
+name: Pruebas
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  pruebas:
+    name: Tests y esquema
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Obtener el código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar el paquete y las herramientas de desarrollo
+        run: python -m pip install -e ".[dev]"
+
+      - name: Lint
+        run: ruff check src tests
+
+      - name: Tests y validación del esquema
+        run: pytest

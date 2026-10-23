@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:curia-maxima:schema:observation:1",
+  "title": "Observación",
+  "description": "Una observación publicada de un indicador oficial. Es el contrato común del dato (F1-02). El valor solo existe si la captura pudo publicarse.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "series_id",
+    "value",
+    "unit",
+    "source",
+    "data_date",
+    "captured_at",
+    "raw_hash",
+    "status"
+  ],
+  "properties": {
+    "series_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-z0-9]+(\\.[a-z0-9]+)+$",
+      "description": "Identificador estable de la serie a la que pertenece la observación."
+    },
+    "value": {
+      "type": "number",
+      "description": "Valor publicado. No se guarda un valor cuando la captura falla."
+    },
+    "unit": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Unidad del valor."
+    },
+    "source": {
+      "$ref": "#/$defs/source"
+    },
+    "data_date": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+      "description": "Fecha del dato en formato AAAA-MM-DD. En series mensuales es el primer día del mes de referencia."
+    },
+    "captured_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$",
+      "description": "Fecha y hora UTC de la captura que publicó esta observación."
+    },
+    "raw_hash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "description": "SHA-256 del cuerpo crudo de la respuesta HTTP que produjo la observación, con prefijo sha256:."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["vigente", "no actualizado"],
+      "description": "Estado de la observación. Una observación guardada queda vigente. El estado no actualizado de una captura fallida vive en la serie, porque esa captura no publica un dato nuevo."
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Fuente oficial del dato.",
+      "required": ["organism", "url"],
+      "properties": {
+        "organism": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Organismo que publica el dato."
+        },
+        "url": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^https://",
+          "description": "URL HTTPS de la consulta que produjo el dato."
+        }
+      }
+    }
+  }
+}

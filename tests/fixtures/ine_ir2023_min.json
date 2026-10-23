@@ -1,0 +1,90 @@
+{
+  "meta": {
+    "schema": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/master/data-message/tools/schemas/1.0/sdmx-json-data-schema.json",
+    "id": "FIXTURE"
+  },
+  "errors": [],
+  "data": {
+    "dataSets": [
+      {
+        "series": {
+          "0:0:0:0": {
+            "observations": {
+              "0": [6.188927453217774, 0, null, 0],
+              "1": [null, null, null, 0],
+              "2": [7.642374158345699, null, 0, 0]
+            }
+          },
+          "0:0:0:1": {
+            "observations": {
+              "0": [104.08044090638575, 0, null, 0],
+              "1": [null, null, null, 0],
+              "2": [124.64149735826885, null, 0, 0]
+            }
+          }
+        }
+      }
+    ],
+    "structure": {
+      "dimensions": {
+        "series": [
+          {
+            "id": "AREA_REF",
+            "name": "Area de referencia",
+            "values": [{ "id": "_T", "name": "Total" }]
+          },
+          {
+            "id": "FREQ",
+            "name": "Frecuencia",
+            "values": [{ "id": "M", "name": "Mensual" }]
+          },
+          {
+            "id": "INDICADOR",
+            "name": "Indicador",
+            "values": [
+              {
+                "id": "IR2023",
+                "name": "Índice nominal de remuneraciones (base 2023 = 100)"
+              }
+            ]
+          },
+          {
+            "id": "UNIDAD",
+            "name": "Unidad de medida",
+            "values": [
+              { "id": "VAR12", "name": "Variación a 12 meses" },
+              { "id": "IX", "name": "Índice" }
+            ]
+          }
+        ],
+        "observation": [
+          {
+            "id": "TIME_PERIOD",
+            "name": "Periodo de referencia",
+            "values": [
+              { "id": "2024-M01", "start": "2024-01-01T00:00:00", "name": "2024-M01" },
+              { "id": "2024-M02", "start": "2024-02-01T00:00:00", "name": "2024-M02" },
+              { "id": "2026-M08", "start": "2026-08-01T00:00:00", "name": "2026-M08" }
+            ]
+          }
+        ]
+      },
+      "attributes": {
+        "observation": [
+          {
+            "id": "OBS_STATUS",
+            "values": [{ "id": "R", "name": "Valor referencial" }]
+          },
+          {
+            "id": "NOTAS_INDICADOR",
+            "values": [{ "id": "Valor provisional", "name": "Valor provisional" }]
+          },
+          {
+            "id": "DECIMALS",
+            "values": [{ "id": "2", "name": "2" }]
+          }
+        ]
+      }
+    }
+  }
+}

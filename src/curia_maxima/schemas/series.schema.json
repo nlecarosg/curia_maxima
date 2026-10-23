@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:curia-maxima:schema:series:1",
+  "title": "Serie",
+  "description": "Serie temporal escrita por un recolector. Conserva el historial de observaciones y el resultado de la última captura.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "series_id",
+    "indicator",
+    "unit",
+    "source",
+    "status",
+    "error",
+    "captured_at",
+    "observations"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1",
+      "description": "Versión de este documento."
+    },
+    "series_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-z0-9]+(\\.[a-z0-9]+)+$",
+      "description": "Identificador estable de la serie."
+    },
+    "indicator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "name"],
+      "properties": {
+        "code": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Código del indicador en la fuente."
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Nombre del indicador."
+        }
+      }
+    },
+    "unit": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Unidad de las observaciones de la serie."
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["organism", "url"],
+      "properties": {
+        "organism": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Organismo que publica el dato."
+        },
+        "url": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^https://",
+          "description": "URL HTTPS de la última consulta intentada cuando aún no hay observaciones. Tras una captura vigente, es la URL que produjo el historial publicado en esa pasada."
+        }
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": ["vigente", "no actualizado"],
+      "description": "Resultado de la última captura. vigente: se publicaron observaciones. no actualizado: la fuente falló o cambió de formato y no se publicó un dato nuevo."
+    },
+    "error": {
+      "description": "Mensaje verificable de la última captura fallida. Es null cuando el estado es vigente.",
+      "oneOf": [
+        { "type": "string", "minLength": 1 },
+        { "type": "null" }
+      ]
+    },
+    "captured_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$",
+      "description": "Fecha y hora UTC de la última captura intentada."
+    },
+    "observations": {
+      "type": "array",
+      "description": "Historial publicado, ordenado por fecha del dato. Una captura fallida no agrega ni modifica elementos.",
+      "items": {
+        "$ref": "urn:curia-maxima:schema:observation:1"
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "status": { "const": "vigente" } },
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "error": { "type": "null" },
+          "observations": { "minItems": 1 }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "status": { "const": "no actualizado" } },
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "error": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  ]
+}
