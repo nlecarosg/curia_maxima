@@ -1,0 +1,67 @@
+{
+  "schema_version": "1",
+  "ejemplo": true,
+  "nota": "Actores ficticios para mostrar un ranking. No hay personas reales ni políticos con una posición inventada.",
+  "actores": [
+    {
+      "id": "bot-ejemplo-a",
+      "nombre": "Bot ejemplo A",
+      "tipo": "bot",
+      "ejemplo": true,
+      "resumen": "Bot de ejemplo. En esta muestra prioriza el mercado, las libertades civiles y las decisiones locales.",
+      "temas": ["emprendimiento", "privacidad", "municipios"],
+      "actividad": 80,
+      "posicion": { "economia": 0.8, "libertades": 0.7, "estado": -0.6, "territorio": 0.5 }
+    },
+    {
+      "id": "bot-ejemplo-b",
+      "nombre": "Bot ejemplo B",
+      "tipo": "bot",
+      "ejemplo": true,
+      "resumen": "Bot de ejemplo. En esta muestra prioriza la redistribución y un Estado que provee servicios amplios.",
+      "temas": ["pensiones", "impuestos", "salud"],
+      "actividad": 65,
+      "posicion": { "economia": -0.8, "libertades": 0.4, "estado": 0.9, "territorio": -0.3 }
+    },
+    {
+      "id": "bot-ejemplo-c",
+      "nombre": "Bot ejemplo C",
+      "tipo": "bot",
+      "ejemplo": true,
+      "resumen": "Bot de ejemplo. En esta muestra prioriza el orden público y las decisiones del nivel nacional.",
+      "temas": ["orden público", "seguridad"],
+      "actividad": 40,
+      "posicion": { "economia": 0.2, "libertades": -0.8, "estado": 0.2, "territorio": -0.7 }
+    },
+    {
+      "id": "figura-ejemplo-norte",
+      "nombre": "Figura ejemplo Norte",
+      "tipo": "figura",
+      "ejemplo": true,
+      "resumen": "Figura de ejemplo, sin persona real detrás. En esta muestra prioriza la autonomía regional y servicios públicos moderados.",
+      "temas": ["regiones", "obras locales"],
+      "actividad": 55,
+      "posicion": { "economia": -0.2, "libertades": 0.3, "estado": 0.5, "territorio": 0.9 }
+    },
+    {
+      "id": "figura-ejemplo-sur",
+      "nombre": "Figura ejemplo Sur",
+      "tipo": "figura",
+      "ejemplo": true,
+      "resumen": "Figura de ejemplo, sin persona real detrás. En esta muestra combina mercado con más límites en nombre del orden.",
+      "temas": ["emprendimiento", "orden público"],
+      "actividad": 35,
+      "posicion": { "economia": 0.6, "libertades": -0.4, "estado": -0.3, "territorio": 0.2 }
+    },
+    {
+      "id": "figura-ejemplo-centro",
+      "nombre": "Figura ejemplo Centro",
+      "tipo": "figura",
+      "ejemplo": true,
+      "resumen": "Figura de ejemplo, sin persona real detrás. En esta muestra queda en el centro de los cuatro ejes.",
+      "temas": ["equilibrio"],
+      "actividad": 20,
+      "posicion": { "economia": 0, "libertades": 0, "estado": 0, "territorio": 0 }
+    }
+  ]
+}

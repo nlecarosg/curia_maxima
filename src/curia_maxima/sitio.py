@@ -1,10 +1,13 @@
-"""Build the read-only public site from the other public repositories.
+"""Build the public site from the other public repositories.
 
 The browser never calls GitHub. A workflow downloads the series, the proposals
 and the norms, writes ``datos.json`` next to the static files, and Pages
 serves that snapshot. Listing those repos from the browser would spend the
 unauthenticated API quota (60 requests per hour per IP) and the page would
 fail for visitors. See the README.
+
+The spectrum questionnaire runs in the browser. Answers stay in localStorage
+and are not written into ``datos.json``.
 """
 
 from __future__ import annotations
@@ -23,6 +26,9 @@ from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any, Protocol
 from urllib.parse import quote, urlparse
+
+from curia_maxima.espectro import ErrorDeEspectro
+from curia_maxima.espectro import aplicar as aplicar_espectro
 
 try:
     import yaml
@@ -655,12 +661,14 @@ def markdown_a_html(texto: str) -> str:
 
 
 def armar_documento(cliente: Lector, ahora: str | None = None) -> dict[str, Any]:
-    return {
+    documento = {
         "generado_en": ahora or utc_now(),
         "indicadores": leer_indicadores(cliente),
         "propuestas": leer_propuestas(cliente),
         "normas": leer_normas(cliente),
     }
+    aplicar_espectro(documento)
+    return documento
 
 
 def codigo_salida(documento: dict[str, Any]) -> int:
@@ -727,7 +735,7 @@ def main(argv: list[str] | None = None) -> int:
         destino = preparar_destino(Path(args.salida))
         documento = armar_documento(ClienteHTTP(token=token_desde_entorno()))
         publicar(destino, documento, estaticos)
-    except ErrorDeSitio as exc:
+    except (ErrorDeSitio, ErrorDeEspectro) as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 1
     for nombre in ("indicadores", "propuestas", "normas"):

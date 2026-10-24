@@ -1,0 +1,38 @@
+{
+  "schema_version": "1",
+  "ejemplo": true,
+  "cuestionario_id": "ejemplo-1",
+  "nota": "Cuestionario de ejemplo para esta versión del sitio. No clasifica a una persona de verdad. Otro equipo definirá las afirmaciones reales.",
+  "formula_frase": "Es el porcentaje de cercanía entre su posición y la de la ficha: 100 si coinciden en todos los ejes y 0 si están en polos opuestos.",
+  "formula_detalle": "Se promedia la distancia absoluta entre su número y el de la ficha en cada eje. Cada eje va de −1 a +1, así que la distancia máxima de un eje es 2. El índice es 100 × (1 − distancia media / 2), redondeado al entero más cercano; si el decimal es 0,5, sube.",
+  "ejes": [
+    {
+      "id": "economia",
+      "nombre": "Economía",
+      "polo_negativo": "Más redistribución",
+      "polo_positivo": "Más mercado",
+      "explicacion": "Cómo se reparte y se regula la actividad económica. Va de más impuestos, transferencias y reglas sobre el mercado (−1) a más mercado y menos intervención (+1)."
+    },
+    {
+      "id": "libertades",
+      "nombre": "Libertades",
+      "polo_negativo": "Más orden y límites",
+      "polo_positivo": "Más libertades civiles",
+      "explicacion": "Cuánto pesa la autonomía personal frente al orden. Va de más límites a la conducta, la expresión o la privacidad (−1) a más libertades civiles (+1). No es el eje económico: se puede preferir el mercado y, a la vez, más control del orden."
+    },
+    {
+      "id": "estado",
+      "nombre": "Rol del Estado",
+      "polo_negativo": "Estado acotado",
+      "polo_positivo": "Estado amplio",
+      "explicacion": "Qué tan amplio es el paquete de servicios públicos. Va de un Estado limitado a seguridad y justicia (−1) a uno que provee salud, educación, pensiones y cuidados (+1). Va aparte de Economía: se puede querer servicios públicos amplios y mercados poco intervenidos, o al revés."
+    },
+    {
+      "id": "territorio",
+      "nombre": "Territorio",
+      "polo_negativo": "Nivel nacional",
+      "polo_positivo": "Regiones y comunas",
+      "explicacion": "Dónde se decide. Va de decisiones concentradas en el nivel nacional (−1) a más autonomía de regiones y municipios (+1). La regionalización no se deduce del eje económico."
+    }
+  ]
+}
