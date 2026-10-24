@@ -1,19 +1,19 @@
 # curia_maxima
 
-curia_maxima es la plataforma de una cámara cívica chilena. Los bots personales de las personas consultan datos oficiales, perfilan candidatos y, más adelante, debaten y votan propuestas. Este repositorio contiene **solo el código de la herramienta**. Los datos, las propuestas y la normativa viven en repositorios públicos aparte, que todavía no están creados.
+curia_maxima es la plataforma de una cámara cívica chilena. Los bots personales de las personas consultan datos oficiales, perfilan candidatos y, más adelante, debaten y votan propuestas. Este repositorio contiene el código de la herramienta y el sitio público de solo lectura. Los datos, las propuestas y la normativa viven en repositorios públicos aparte.
 
-El costo de operación tiene que seguir en cero: planes gratuitos y GitHub Actions. Este repositorio no despliega servicios ni programa recolecciones.
+El costo de operación sigue en cero: GitHub Actions y GitHub Pages. No hay servicios de pago ni secretos.
 
 ## Cuatro piezas independientes
 
 | Pieza | Dónde vive | Qué contiene |
 | --- | --- | --- |
-| Código de la cámara | Este repositorio | Esquema, validación y recolectores. Más adelante, el soporte para que los bots consulten, debatan y voten. Licencia MIT. |
-| Propuestas | Repositorio propio, aún no creado | Textos de las propuestas, en CC0. El contenido cívico no queda atado a la licencia del código. |
-| Datos y KPI validados | Repositorio propio, aún no creado | Series que escriben los recolectores. Este código no versiona esos archivos. |
-| Normativa vigente | Repositorio propio, aún no creado | Textos normativos de referencia, separados de las propuestas y de los datos. |
+| Código de la cámara y sitio público | Este repositorio | Esquema, validación, recolectores y la página estática. Más adelante, el soporte para que los bots consulten, debatan y voten. Licencia MIT. |
+| Propuestas | [nlecarosg/curia_propuestas](https://github.com/nlecarosg/curia_propuestas) | Textos de las propuestas, en CC0. El contenido cívico no queda atado a la licencia del código. |
+| Datos y KPI validados | [nlecarosg/curia_datos](https://github.com/nlecarosg/curia_datos) | Series que escriben los recolectores. Este código no versiona esos archivos. |
+| Normativa vigente | [nlecarosg/curia_normativas](https://github.com/nlecarosg/curia_normativas) | Normas en JSON. La compilación se ofrece en CC0; los textos oficiales se citan desde Ley Chile. |
 
-Los recolectores escriben en una ruta que se elige al ejecutarlos (`--output` o la variable `CURIA_OUTPUT_DIR`). Esa ruta será, cuando exista, una copia del repositorio de datos. El código no asume que los datos están en este repositorio.
+Los recolectores escriben en una ruta que se elige al ejecutarlos (`--output` o la variable `CURIA_OUTPUT_DIR`). Esa ruta es una copia del repositorio de datos. El código no asume que los datos están en este repositorio.
 
 ```text
 bots personales
@@ -22,9 +22,43 @@ bots personales
 curia_maxima (este repo, código, MIT)
       |
       +-- escribe series --> repo de datos y KPI (ruta configurable)
-      +-- leerá --> repo de propuestas (CC0)
-      +-- leerá --> repo de normativa vigente
+      +-- lee, al armar el sitio --> repo de propuestas (CC0)
+      +-- lee, al armar el sitio --> repo de normativa
+      +-- publica una lectura --> GitHub Pages
 ```
+
+## Sitio público
+
+La página de solo lectura está en `web/estaticos`. No usa un framework. Quien la abre no consulta GitHub: lee `datos.json`, armado antes y servido en el mismo origen.
+
+```bash
+python -m curia_maxima.sitio --salida _sitio
+```
+
+Eso baja las series de `curia_datos`, las propuestas de `curia_propuestas` y las normas de `curia_normativas`, y escribe `_sitio/` con el HTML, el CSS, el JavaScript y `datos.json`. Hace falta PyYAML (`pip install -e ".[sitio]"`; también entra en `.[dev]`).
+
+El flujo [`.github/workflows/paginas.yml`](.github/workflows/paginas.yml) publica esa carpeta en GitHub Pages:
+
+- en cada push a `main`;
+- todos los días a las 13:15 UTC, después de la actualización de `curia_datos` (12:00 UTC);
+- a mano, con *workflow_dispatch*.
+
+La dirección prevista es <https://nlecarosg.github.io/curia_maxima/>.
+
+### Por qué no se lee desde el navegador
+
+`raw.githubusercontent.com` entrega un archivo, pero no lista carpetas. Las propuestas y las normas cambian de nombre y de ruta, así que hay que pedir el árbol a `api.github.com`. Sin autenticación esa API permite 60 solicitudes por hora y por IP: una visita gasta varias y la página deja de cargar para quien venga después. El workflow usa el `GITHUB_TOKEN` automático del trabajo (no es un secreto guardado en el repositorio) y baja todo una vez. Quien abre la página solo habla con GitHub Pages. No hay analítica ni otros dominios.
+
+Si un repositorio no responde, el armado reintenta y deja en `datos.json` un aviso para esa sección. Las otras se publican igual. Si fallan las tres, el workflow termina con error y Pages conserva la versión anterior. Si `datos.json` no llega al navegador, la página muestra el aviso en vez de quedarse en blanco.
+
+### Ajuste manual de Pages
+
+El `GITHUB_TOKEN` del workflow no puede cambiar la configuración del repositorio. Alguien con permiso de administración tiene que hacer esto una vez:
+
+1. Entrar a **Settings → Pages** de `nlecarosg/curia_maxima`.
+2. En **Build and deployment**, dejar **Source** en **GitHub Actions** (no «Deploy from a branch»).
+
+Esa opción aparece cuando el workflow ya está en `main`. Si el primer trabajo «Publicar el sitio» falla porque Pages todavía no está en GitHub Actions, hay que repetirlo después de ese cambio.
 
 ## Estructura de este repositorio
 
@@ -35,6 +69,7 @@ curia_maxima (este repo, código, MIT)
 ├── pyproject.toml
 ├── src/curia_maxima/
 │   ├── cli.py
+│   ├── sitio.py
 │   ├── hashing.py
 │   ├── store.py
 │   ├── validation.py
@@ -44,10 +79,13 @@ curia_maxima (este repo, código, MIT)
 │       ├── observation.schema.json
 │       └── series.schema.json
 ├── tests/
-└── .github/workflows/ci.yml
+├── web/estaticos/          página de solo lectura (HTML, CSS y JS)
+└── .github/workflows/
+    ├── ci.yml              pruebas, y un armado del sitio contra los repos públicos
+    └── paginas.yml         publicación en GitHub Pages
 ```
 
-`output/` y `data/` están en `.gitignore` por si alguien escribe dentro del clon. No son el lugar de los datos.
+`output/`, `data/` y `_sitio/` están en `.gitignore`. No son el lugar de los datos: `_sitio/` es solo la carpeta que arma el comando del sitio.
 
 ## Esquema común de la observación
 
@@ -143,7 +181,7 @@ ruff check src tests
 pytest
 ```
 
-`pytest` valida los esquemas, el archivo que escribe el recolector y un cambio de formato simulado. Esas pruebas no llaman al INE. El flujo de GitHub Actions (`.github/workflows/ci.yml`) ejecuta lo mismo en cada pull request. No hay despliegue, cron ni secretos.
+`pytest` valida los esquemas, el archivo que escribe el recolector, un cambio de formato simulado y el armado del sitio con datos de prueba. Esas pruebas no llaman al INE ni a GitHub. El flujo `.github/workflows/ci.yml` ejecuta lo mismo en cada pull request y, además, arma el sitio una vez contra los tres repositorios públicos. El cron y la publicación están solo en `paginas.yml`. No hay secretos.
 
 ## Licencia
 

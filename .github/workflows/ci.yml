@@ -1,4 +1,5 @@
-# Solo pruebas y validación del esquema. Sin despliegue, sin cron y sin secretos.
+# Pruebas del recolector y armado del sitio contra los repositorios públicos.
+# No despliega, no tiene cron y no usa secretos guardados.
 name: Pruebas
 
 on:
@@ -29,3 +30,49 @@ jobs:
 
       - name: Tests y validación del esquema
         run: pytest
+
+  sitio:
+    name: Sitio con datos públicos
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Obtener el código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar el armado del sitio
+        run: python -m pip install -e ".[sitio]"
+
+      - name: Armar la página desde los repositorios públicos
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python -m curia_maxima.sitio --salida _sitio
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          sitio = Path("_sitio")
+          assert (sitio / "index.html").is_file()
+          datos = json.loads((sitio / "datos.json").read_text(encoding="utf-8"))
+          indicadores = datos["indicadores"]
+          assert indicadores["ok"], indicadores["aviso"]
+          serie = next(item for item in indicadores["series"] if item["codigo"] == "IR2023")
+          assert isinstance(serie["ultimo"]["valor"], (int, float))
+          assert len(serie["puntos"]) >= 12
+          propuestas = datos["propuestas"]
+          assert propuestas["ok"], propuestas["aviso"]
+          assert any(item["id"] == "PROP-2026-000" and item["ejemplo"] for item in propuestas["items"])
+          normas = datos["normas"]
+          assert normas["ok"], normas["aviso"]
+          assert {item["id"] for item in normas["items"]} >= {
+              "ley-21206",
+              "ley-21695",
+              "providencia-ordenanza-6-1998",
+          }
+          print("sitio público armado con los tres repositorios")
+          PY

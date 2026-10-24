@@ -9,6 +9,7 @@ dist/
 build/
 output/
 data/
+_sitio/
 .env
 *.tmp
 .DS_Store

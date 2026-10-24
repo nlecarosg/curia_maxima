@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Curia Máxima, piloto de senado virtual. Indicadores oficiales, propuestas y normas, en lectura pública.">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'">
+  <title>Curia Máxima · piloto de senado virtual</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+  <a class="saltar" href="#contenido">Saltar al contenido</a>
+  <div class="franja"></div>
+  <header class="cabecera envoltorio">
+    <p class="marca">Cámara cívica chilena · piloto · solo lectura</p>
+    <h1>Curia Máxima</h1>
+    <p class="bajada">Senado virtual. Esta página muestra los indicadores, las propuestas y las normas que la cámara guarda en repositorios abiertos.</p>
+  </header>
+  <nav class="menu" aria-label="Secciones">
+    <div class="envoltorio menu-interior">
+      <a href="#indicadores">Indicadores</a>
+      <a href="#propuestas">Propuestas</a>
+      <a href="#normas">Normas</a>
+    </div>
+  </nav>
+  <main id="contenido" class="envoltorio">
+    <p id="aviso-general" class="aviso" role="alert" hidden></p>
+
+    <section id="indicadores" aria-labelledby="titulo-indicadores">
+      <p class="numero">01</p>
+      <h2 id="titulo-indicadores">Indicadores</h2>
+      <p class="intro">Cifras de fuentes oficiales, con la fecha del dato y el enlace a quien las publica. Hoy la parrilla tiene el índice nominal de remuneraciones del INE.</p>
+      <div class="contenido"><p class="cargando">Cargando indicadores…</p></div>
+    </section>
+
+    <section id="propuestas" aria-labelledby="titulo-propuestas">
+      <p class="numero">02</p>
+      <h2 id="titulo-propuestas">Propuestas</h2>
+      <p class="intro">Cada propuesta muestra el título, el estado y el resto del encabezado, y el texto. Lo marcado como ejemplo no es una moción.</p>
+      <div class="contenido"><p class="cargando">Cargando propuestas…</p></div>
+    </section>
+
+    <section id="normas" aria-labelledby="titulo-normas">
+      <p class="numero">03</p>
+      <h2 id="titulo-normas">Normas</h2>
+      <p class="intro">Cada norma dice si está vigente o derogada. Si está derogada, se indica qué norma la derogó. El enlace abre la fuente oficial.</p>
+      <div class="contenido"><p class="cargando">Cargando normas…</p></div>
+    </section>
+  </main>
+  <footer class="pie envoltorio">
+    <p>Curia Máxima está en piloto. Esta página es de solo lectura: no recoge votos, no pide cuentas y no envía datos de visita a terceros. No hay rastreadores ni analítica.</p>
+    <ul>
+      <li>El código de esta página y de la herramienta está bajo la licencia <a href="https://github.com/nlecarosg/curia_maxima/blob/main/LICENSE">MIT</a>.</li>
+      <li>Los datos y las propuestas se publican bajo <a href="https://creativecommons.org/publicdomain/zero/1.0/legalcode.es">CC0 1.0</a> (<a href="https://github.com/nlecarosg/curia_datos/blob/main/LICENSE">datos</a>, <a href="https://github.com/nlecarosg/curia_propuestas/blob/main/LICENSE">propuestas</a>). Las cifras siguen siendo del organismo que las elabora.</li>
+      <li>La compilación de <a href="https://github.com/nlecarosg/curia_normativas/blob/main/LICENSE">normativas</a> se ofrece en CC0. Los textos oficiales no se re-licencian: cada norma enlaza su versión en Ley Chile.</li>
+    </ul>
+    <p id="generado" class="generado"></p>
+  </footer>
+  <noscript>
+    <p class="aviso envoltorio">Esta página necesita JavaScript para mostrar los datos publicados. El programa no carga rastreadores.</p>
+  </noscript>
+  <script src="sitio.js"></script>
+</body>
+</html>
