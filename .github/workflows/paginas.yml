@@ -1,4 +1,4 @@
-# Publica el sitio de solo lectura en GitHub Pages.
+# Publica el sitio estático en GitHub Pages.
 # El GITHUB_TOKEN de este trabajo es el token automático: no es un secreto
 # guardado en el repositorio. Solo se usa para leer la API pública y no se
 # escribe en el sitio. No puede cambiar Settings → Pages.

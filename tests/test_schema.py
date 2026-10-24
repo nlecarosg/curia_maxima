@@ -66,7 +66,11 @@ def test_schema_documents_are_valid_json_schema() -> None:
 
 def test_schema_files_are_the_contract_on_disk() -> None:
     names = sorted(path.name for path in SCHEMA_DIR.glob("*.json"))
-    assert names == ["observation.schema.json", "series.schema.json"]
+    assert names == [
+        "espectro.schema.json",
+        "observation.schema.json",
+        "series.schema.json",
+    ]
     for name in names:
         document = json.loads((SCHEMA_DIR / name).read_text(encoding="utf-8"))
         assert document["$schema"] == "https://json-schema.org/draft/2020-12/schema"

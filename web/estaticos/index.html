@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Curia Máxima, piloto de senado virtual. Indicadores oficiales, propuestas y normas, en lectura pública.">
+  <meta name="description" content="Curia Máxima, piloto de senado virtual. Mida un espectro de ejemplo en su navegador, vea el ajuste con propuestas y rankings. Sin rastreadores.">
   <meta name="referrer" content="no-referrer">
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'">
   <title>Curia Máxima · piloto de senado virtual</title>
@@ -14,43 +14,69 @@
   <a class="saltar" href="#contenido">Saltar al contenido</a>
   <div class="franja"></div>
   <header class="cabecera envoltorio">
-    <p class="marca">Cámara cívica chilena · piloto · solo lectura</p>
+    <p class="marca">Cámara cívica chilena · piloto</p>
     <h1>Curia Máxima</h1>
-    <p class="bajada">Senado virtual. Esta página muestra los indicadores, las propuestas y las normas que la cámara guarda en repositorios abiertos.</p>
+    <p class="bajada">Senado virtual. Puede medir un espectro de ejemplo en este navegador, ver qué tan cerca queda cada propuesta y revisar rankings de actores de muestra. Los indicadores, las propuestas y las normas siguen saliendo de repositorios abiertos.</p>
   </header>
   <nav class="menu" aria-label="Secciones">
     <div class="envoltorio menu-interior">
-      <a href="#indicadores">Indicadores</a>
+      <a href="#espectro">Mi espectro</a>
       <a href="#propuestas">Propuestas</a>
+      <a href="#rankings">Rankings</a>
+      <a href="#opiniones">Opiniones</a>
+      <a href="#indicadores">Indicadores</a>
       <a href="#normas">Normas</a>
     </div>
   </nav>
   <main id="contenido" class="envoltorio">
     <p id="aviso-general" class="aviso" role="alert" hidden></p>
 
-    <section id="indicadores" aria-labelledby="titulo-indicadores">
+    <section id="espectro" aria-labelledby="titulo-espectro">
       <p class="numero">01</p>
-      <h2 id="titulo-indicadores">Indicadores</h2>
-      <p class="intro">Cifras de fuentes oficiales, con la fecha del dato y el enlace a quien las publica. Hoy la parrilla tiene el índice nominal de remuneraciones del INE.</p>
-      <div class="contenido"><p class="cargando">Cargando indicadores…</p></div>
+      <h2 id="titulo-espectro">Mi espectro</h2>
+      <p class="intro">Dieciséis afirmaciones de ejemplo, en una escala de acuerdo. El resultado lo ubica en cuatro ejes: economía, libertades, rol del Estado y territorio. Economía y rol del Estado van separados: no es lo mismo regular el mercado que proveer salud o pensiones. Libertades mira la autonomía personal frente al orden. Territorio mira si decide el nivel nacional o las regiones y comunas.</p>
+      <p class="ejemplo">Ejemplo. Estas afirmaciones son de muestra. No describen el programa de Curia Máxima ni clasifican de verdad a una persona.</p>
+      <p class="aviso" id="privacidad-espectro">Privacidad. Sus respuestas sobre su posición política se guardan solo en este navegador (localStorage). No se envían a ningún servidor: Curia Máxima no las recibe y no puede verlas. El botón «Borrar mis respuestas de este navegador» las elimina de este dispositivo.</p>
+      <div class="contenido"><p class="cargando">Cargando el cuestionario…</p></div>
     </section>
 
     <section id="propuestas" aria-labelledby="titulo-propuestas">
       <p class="numero">02</p>
       <h2 id="titulo-propuestas">Propuestas</h2>
-      <p class="intro">Cada propuesta muestra el título, el estado y el resto del encabezado, y el texto. Lo marcado como ejemplo no es una moción.</p>
+      <p class="intro">Cada propuesta muestra el título, el estado y el texto. Si tiene posición en los ejes, también muestra un índice de ajuste con la suya. Puede ordenarlas por ese índice. Lo marcado como ejemplo no es una moción.</p>
       <div class="contenido"><p class="cargando">Cargando propuestas…</p></div>
     </section>
 
-    <section id="normas" aria-labelledby="titulo-normas">
+    <section id="rankings" aria-labelledby="titulo-rankings">
       <p class="numero">03</p>
+      <h2 id="titulo-rankings">Rankings</h2>
+      <p class="intro">Actores de ejemplo, figuras y bots, con su posición en los mismos ejes y una participación ficticia. El índice de ajuste usa lo que usted guardó en este navegador. Es el porcentaje de cercanía: 100 si coinciden en todos los ejes y 0 si están en polos opuestos.</p>
+      <div class="contenido"><p class="cargando">Cargando rankings…</p></div>
+    </section>
+
+    <section id="opiniones" aria-labelledby="titulo-opiniones">
+      <p class="numero">04</p>
+      <h2 id="titulo-opiniones">Qué opina la gente</h2>
+      <p class="intro">Un lugar para ver acuerdos y desacuerdos sobre las propuestas, aparte de su espectro privado.</p>
+      <p class="aviso">Próximamente. Hoy no hay forma de recoger opiniones sin un servidor, y esta página no va a enviar a ningún lado lo que usted responde en Mi espectro. Cuando exista, será un canal público y opcional, separado de esas respuestas.</p>
+    </section>
+
+    <section id="indicadores" aria-labelledby="titulo-indicadores">
+      <p class="numero">05</p>
+      <h2 id="titulo-indicadores">Indicadores</h2>
+      <p class="intro">Cifras de fuentes oficiales, con la fecha del dato y el enlace a quien las publica. Hoy la parrilla tiene el índice nominal de remuneraciones del INE.</p>
+      <div class="contenido"><p class="cargando">Cargando indicadores…</p></div>
+    </section>
+
+    <section id="normas" aria-labelledby="titulo-normas">
+      <p class="numero">06</p>
       <h2 id="titulo-normas">Normas</h2>
       <p class="intro">Cada norma dice si está vigente o derogada. Si está derogada, se indica qué norma la derogó. El enlace abre la fuente oficial.</p>
       <div class="contenido"><p class="cargando">Cargando normas…</p></div>
     </section>
   </main>
   <footer class="pie envoltorio">
-    <p>Curia Máxima está en piloto. Esta página es de solo lectura: no recoge votos, no pide cuentas y no envía datos de visita a terceros. No hay rastreadores ni analítica.</p>
+    <p>Curia Máxima está en piloto. No pide cuentas y no envía datos de visita a terceros. No hay rastreadores ni analítica. Las respuestas de Mi espectro se quedan en su navegador; el botón «Borrar mis respuestas de este navegador» las elimina de este dispositivo.</p>
     <ul>
       <li>El código de esta página y de la herramienta está bajo la licencia <a href="https://github.com/nlecarosg/curia_maxima/blob/main/LICENSE">MIT</a>.</li>
       <li>Los datos y las propuestas se publican bajo <a href="https://creativecommons.org/publicdomain/zero/1.0/legalcode.es">CC0 1.0</a> (<a href="https://github.com/nlecarosg/curia_datos/blob/main/LICENSE">datos</a>, <a href="https://github.com/nlecarosg/curia_propuestas/blob/main/LICENSE">propuestas</a>). Las cifras siguen siendo del organismo que las elabora.</li>
@@ -59,8 +85,9 @@
     <p id="generado" class="generado"></p>
   </footer>
   <noscript>
-    <p class="aviso envoltorio">Esta página necesita JavaScript para mostrar los datos publicados. El programa no carga rastreadores.</p>
+    <p class="aviso envoltorio">Esta página necesita JavaScript para mostrar los datos publicados y el cuestionario. El programa no carga rastreadores. Sin JavaScript no se guarda ninguna respuesta.</p>
   </noscript>
+  <script src="espectro.js"></script>
   <script src="sitio.js"></script>
 </body>
 </html>

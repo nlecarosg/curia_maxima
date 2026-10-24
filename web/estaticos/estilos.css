@@ -357,16 +357,190 @@ a:hover { color: var(--sello); }
 
 .cargando { font-family: var(--sans); color: var(--muted); }
 
+button, select, .boton-enlace {
+  font-family: var(--sans);
+  font-size: 1rem;
+  color: var(--tinta);
+  background: var(--card);
+  border: 1px solid var(--tinta);
+  min-height: 44px;
+  padding: 0.45rem 0.9rem;
+  border-radius: 0;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+button.primario, .boton-enlace.primario {
+  background: var(--tinta);
+  color: var(--papel);
+}
+
+button.borrar {
+  background: transparent;
+  color: var(--sello);
+  border-color: var(--sello);
+}
+
+.acciones, .controles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  align-items: center;
+  margin: 0.9rem 0 0.4rem;
+}
+
+.controles label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.controles select { min-width: min(100%, 18rem); }
+
+fieldset.afirmacion {
+  border: 1px solid var(--linea);
+  background: var(--card);
+  margin: 0 0 0.75rem;
+  padding: 0.7rem 0.9rem 0.45rem;
+}
+
+fieldset.afirmacion.falta { border-color: var(--sello); }
+
+legend {
+  padding: 0 0.25rem;
+  font-size: 1.02rem;
+}
+
+.opcion {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 44px;
+  font-family: var(--sans);
+  font-size: 1rem;
+}
+
+.opcion input {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: 0;
+  flex: 0 0 auto;
+}
+
+.ajuste { margin: 0.8rem 0 0.4rem; }
+
+.ajuste-valor {
+  margin: 0.15rem 0;
+  font-size: clamp(2.2rem, 7vw, 3.2rem);
+  line-height: 0.95;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+}
+
+.ajuste-frase, .sin-ajuste, .eje-lectura, .leyenda-marcas {
+  font-family: var(--sans);
+  font-size: 0.92rem;
+  color: var(--muted);
+  max-width: 42rem;
+}
+
+.eje { margin: 0.85rem 0 0.35rem; }
+
+.eje-nombre {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.eje-polos {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 0.2rem;
+  font-family: var(--sans);
+  font-size: 0.85rem;
+}
+
+.pista {
+  position: relative;
+  height: 0.55rem;
+  background: var(--linea);
+  margin: 0.85rem 0.45rem 0.45rem;
+}
+
+.pista-cero {
+  position: absolute;
+  left: 50%;
+  top: -0.28rem;
+  bottom: -0.28rem;
+  width: 1px;
+  background: var(--muted);
+}
+
+.marca {
+  position: absolute;
+  top: 50%;
+  width: 0.95rem;
+  height: 0.95rem;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid var(--card);
+}
+
+.marca-usted { background: var(--sello); z-index: 1; }
+
+.marca-otro { background: var(--grafico); }
+
+.muestra::before {
+  content: "";
+  display: inline-block;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  margin-right: 0.35rem;
+  vertical-align: -0.05rem;
+}
+
+.muestra-usted::before { background: var(--sello); }
+
+.muestra-otro::before { background: var(--grafico); }
+
+.muestra + .muestra { margin-left: 0.9rem; }
+
+.puesto {
+  margin: 0 0 0.35rem;
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sello);
+}
+
+.actor h3 { margin-top: 0.2rem; }
+
 @media (max-width: 640px) {
   .envoltorio { width: min(960px, calc(100% - 1.25rem)); }
   .ficha, .mocion, .norma { padding: 1rem 0.9rem; }
   .ficha-datos { grid-template-columns: 1fr; gap: 0.1rem; }
   .ficha-datos dd { margin: 0 0 0.65rem; }
   .bajada { font-size: 1.05rem; }
+  section, .mocion, .ficha, .norma, .resultado { scroll-margin-top: 7.5rem; }
+  .acciones, .controles { align-items: stretch; }
+  .acciones > button, .acciones > .boton-enlace, .controles, .controles label, .controles select { width: 100%; }
 }
 
 @media print {
   .menu, .saltar, .franja { display: none; }
-  .ficha, .mocion, .norma { break-inside: avoid; }
+  .ficha, .mocion, .norma, .actor { break-inside: avoid; }
   body { background: #fff; }
 }

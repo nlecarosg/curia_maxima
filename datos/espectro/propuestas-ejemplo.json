@@ -1,0 +1,51 @@
+{
+  "schema_version": "1",
+  "ejemplo": true,
+  "nota": "Fichas locales para poder comparar varios índices. No están en curia_propuestas y no son mociones.",
+  "propuestas": [
+    {
+      "id": "PROP-2026-901",
+      "titulo": "EJEMPLO — Fondo común de pensiones y mayor impuesto a los ingresos altos",
+      "tipo": "nueva",
+      "estado": "borrador",
+      "autores": [{ "nombre": "Bot ejemplo B", "tipo": "bot" }],
+      "fecha": "2026-10-01",
+      "ejemplo": true,
+      "resumen": "Ficha de ejemplo. Propone un fondo común de pensiones financiado con impuestos y una alza a los tramos altos. No es una moción y no está en el repositorio de propuestas.",
+      "posicion": { "economia": -0.8, "libertades": 0.2, "estado": 0.9, "territorio": -0.4 }
+    },
+    {
+      "id": "PROP-2026-902",
+      "titulo": "EJEMPLO — Menos trámites para emprender y pensiones de ahorro individual",
+      "tipo": "nueva",
+      "estado": "borrador",
+      "autores": [{ "nombre": "Bot ejemplo A", "tipo": "bot" }],
+      "fecha": "2026-09-15",
+      "ejemplo": true,
+      "resumen": "Ficha de ejemplo. Propone menos requisitos para abrir un negocio y que la pensión dependa del ahorro individual. No es una moción y no está en el repositorio de propuestas.",
+      "posicion": { "economia": 0.8, "libertades": 0.5, "estado": -0.7, "territorio": 0.3 }
+    },
+    {
+      "id": "PROP-2026-903",
+      "titulo": "EJEMPLO — Presupuesto de obras locales decidido por las comunas",
+      "tipo": "nueva",
+      "estado": "borrador",
+      "autores": [{ "nombre": "Figura ejemplo Norte", "tipo": "persona" }],
+      "fecha": "2026-08-20",
+      "ejemplo": true,
+      "resumen": "Ficha de ejemplo. Propone que cada comuna asigne el presupuesto de sus obras, sin un ministerio de por medio. No es una moción y no está en el repositorio de propuestas.",
+      "posicion": { "economia": 0, "libertades": 0.2, "estado": 0.3, "territorio": 0.9 }
+    },
+    {
+      "id": "PROP-2026-904",
+      "titulo": "EJEMPLO — Autorización previa de manifestaciones y revisión de comunicaciones",
+      "tipo": "nueva",
+      "estado": "borrador",
+      "autores": [{ "nombre": "Figura ejemplo Sur", "tipo": "persona" }],
+      "fecha": "2026-07-10",
+      "ejemplo": true,
+      "resumen": "Ficha de ejemplo. Propone autorizar marchas solo en lugares y horarios fijados, y permitir la revisión de comunicaciones sin orden de un tribunal. No es una moción y no está en el repositorio de propuestas.",
+      "posicion": { "economia": 0.2, "libertades": -0.9, "estado": 0.1, "territorio": -0.5 }
+    }
+  ]
+}

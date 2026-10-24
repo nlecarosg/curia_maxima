@@ -165,6 +165,17 @@ def test_arma_las_tres_secciones_y_escapa_el_texto(tmp_path: Path) -> None:
     assert propuesta["fecha"] == "2026-10-23"
     assert propuesta["ejemplo"] is True
     assert propuesta["autores"] == [{"nombre": "bot-ejemplo", "tipo": "bot"}]
+    assert propuesta["posicion"] == {
+        "economia": 0.1,
+        "libertades": 0.6,
+        "estado": 0.4,
+        "territorio": 0.3,
+    }
+    assert "ejemplo" in propuesta["posicion_comentario"].lower()
+    assert documento["espectro"]["ejemplo"] is True
+    assert documento["espectro"]["cuestionario_id"] == "ejemplo-1"
+    ejemplos = documento["espectro"]["propuestas_ejemplo"]
+    assert any(item["id"] == "PROP-2026-901" for item in ejemplos)
     assert "<script>" not in propuesta["cuerpo_html"]
     assert "&lt;script&gt;" in propuesta["cuerpo_html"]
     assert 'href="javascript:' not in propuesta["cuerpo_html"]
@@ -260,15 +271,24 @@ def test_main_exige_la_carpeta_de_salida() -> None:
 
 
 def test_estaticos_no_cargan_rastreadores() -> None:
-    for nombre in ("index.html", "estilos.css", "sitio.js"):
+    for nombre in ("index.html", "estilos.css", "sitio.js", "espectro.js"):
         texto = (ESTATICOS / nombre).read_text(encoding="utf-8").lower()
         for marca in RASTREO:
             assert marca not in texto
+        assert "xmlhttprequest" not in texto
+        assert "sendbeacon" not in texto
     html = (ESTATICOS / "index.html").read_text(encoding="utf-8")
     assert 'lang="es"' in html
     assert "Indicadores" in html and "Propuestas" in html and "Normas" in html
+    assert "Mi espectro" in html and "Rankings" in html and "Próximamente" in html
+    assert "localStorage" in html
+    assert "No se envían a ningún servidor" in html
+    assert "Borrar mis respuestas de este navegador" in html
     assert "CC0" in html and "MIT" in html
     assert "piloto" in html.lower()
+    js = (ESTATICOS / "sitio.js").read_text(encoding="utf-8")
+    assert js.count("fetch(") == 1
+    assert 'fetch("datos.json"' in js
 
 
 class _Respuesta:

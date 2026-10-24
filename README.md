@@ -1,6 +1,6 @@
 # curia_maxima
 
-curia_maxima es la plataforma de una cámara cívica chilena. Los bots personales de las personas consultan datos oficiales, perfilan candidatos y, más adelante, debaten y votan propuestas. Este repositorio contiene el código de la herramienta y el sitio público de solo lectura. Los datos, las propuestas y la normativa viven en repositorios públicos aparte.
+curia_maxima es la plataforma de una cámara cívica chilena. Los bots personales de las personas consultan datos oficiales, perfilan candidatos y, más adelante, debaten y votan propuestas. Este repositorio contiene el código de la herramienta y el sitio público. Los datos, las propuestas y la normativa viven en repositorios públicos aparte. El sitio sigue siendo estático: el cuestionario se responde en el navegador.
 
 El costo de operación sigue en cero: GitHub Actions y GitHub Pages. No hay servicios de pago ni secretos.
 
@@ -8,7 +8,7 @@ El costo de operación sigue en cero: GitHub Actions y GitHub Pages. No hay serv
 
 | Pieza | Dónde vive | Qué contiene |
 | --- | --- | --- |
-| Código de la cámara y sitio público | Este repositorio | Esquema, validación, recolectores y la página estática. Más adelante, el soporte para que los bots consulten, debatan y voten. Licencia MIT. |
+| Código de la cámara y sitio público | Este repositorio | Esquema, validación, recolectores, la página estática y el cuestionario de ejemplo en `datos/espectro/`. Más adelante, el soporte para que los bots consulten, debaten y voten. Licencia MIT. |
 | Propuestas | [nlecarosg/curia_propuestas](https://github.com/nlecarosg/curia_propuestas) | Textos de las propuestas, en CC0. El contenido cívico no queda atado a la licencia del código. |
 | Datos y KPI validados | [nlecarosg/curia_datos](https://github.com/nlecarosg/curia_datos) | Series que escriben los recolectores. Este código no versiona esos archivos. |
 | Normativa vigente | [nlecarosg/curia_normativas](https://github.com/nlecarosg/curia_normativas) | Normas en JSON. La compilación se ofrece en CC0; los textos oficiales se citan desde Ley Chile. |
@@ -29,7 +29,7 @@ curia_maxima (este repo, código, MIT)
 
 ## Sitio público
 
-La página de solo lectura está en `web/estaticos`. No usa un framework. Quien la abre no consulta GitHub: lee `datos.json`, armado antes y servido en el mismo origen.
+La página está en `web/estaticos`. No usa un framework. Quien la abre no consulta GitHub: lee `datos.json`, armado antes y servido en el mismo origen. El cuestionario no sale de ese navegador.
 
 ```bash
 python -m curia_maxima.sitio --salida _sitio
@@ -51,7 +51,64 @@ La dirección prevista es <https://nlecarosg.github.io/curia_maxima/>.
 
 Si un repositorio no responde, el armado reintenta y deja en `datos.json` un aviso para esa sección. Las otras se publican igual. Si fallan las tres, el workflow termina con error y Pages conserva la versión anterior. Si `datos.json` no llega al navegador, la página muestra el aviso en vez de quedarse en blanco.
 
-### Ajuste manual de Pages
+## Espectro, índice de ajuste y rankings
+
+La página deja de ser solo un reporte. Quien la abre puede responder un cuestionario, ver propuestas ordenadas por cercanía y mirar un ranking de actores. Todo eso ocurre en el navegador. No hay backend, ni cuenta, ni analítica.
+
+El contenido político de esta versión es de ejemplo y está marcado así en la página. No hay políticos reales con una posición inventada. Los actores se llaman «Bot ejemplo A», «Figura ejemplo Norte» y similares. Otro equipo definirá el contenido real.
+
+### Ejes
+
+Cada posición es un vector de cuatro números, de −1 a +1. Son cuatro, y no uno, porque una propuesta chilena suele moverse en dimensiones que no se deducen entre sí:
+
+| Eje | −1 | +1 | Por qué va aparte |
+| --- | --- | --- | --- |
+| Economía | Más redistribución y regulación del mercado | Más mercado y menos intervención | Dice cómo se reparte y se regula la actividad económica. |
+| Libertades | Más límites en nombre del orden | Más libertades civiles y autonomía personal | No es el eje económico: se puede preferir el mercado y, a la vez, más control del orden. |
+| Rol del Estado | Estado acotado a seguridad y justicia | Estado que provee salud, educación, pensiones y cuidados | No es Economía: se pueden querer servicios públicos amplios y mercados poco intervenidos, o al revés. |
+| Territorio | Decisiones en el nivel nacional | Más autonomía de regiones y municipios | La regionalización no sale del eje económico. |
+
+El cuestionario tiene 16 afirmaciones (cuatro por eje), en la escala 1 «muy en desacuerdo» … 5 «muy de acuerdo». Cada afirmación tiene un sentido +1 o −1. La coordenada de un eje es el promedio de `(respuesta − 3) / 2`, multiplicado por ese sentido. Así, «muy de acuerdo» con una afirmación de sentido +1 empuja el eje a +1, y «muy de acuerdo» con una de sentido −1 lo empuja a −1.
+
+### Fórmula del índice
+
+En una frase, la que muestra la interfaz: es el porcentaje de cercanía entre su posición y la de la ficha: 100 si coinciden en todos los ejes y 0 si están en polos opuestos.
+
+```text
+ajuste = redondear(100 × (1 − Σ|pᵢ − qᵢ| / (2n)))
+```
+
+`p` es la persona, `q` es la propuesta o el actor, `n` es la cantidad de ejes (hoy 4) y cada coordenada está en [−1, +1]. La distancia de un eje es como máximo 2, así que dividir la distancia media por 2 la deja entre 0 y 1. El redondeo es al entero más cercano y el 0,5 sube (no es el redondeo bancario de Python). La misma cuenta está en `curia_maxima.espectro.ajuste` y en `web/estaticos/espectro.js`. Si la persona no respondió, la ficha invita a Mi espectro y no inventa un porcentaje. Las propuestas se pueden ordenar por ese índice.
+
+### Privacidad
+
+Las respuestas se guardan solo en el navegador, en `localStorage`, bajo la clave `curia-maxima-espectro`. No se envían a ningún servidor: no hay `fetch` distinto de `datos.json` en el mismo origen, ni rastreadores, ni analítica. La página lo dice junto al cuestionario y ofrece el botón «Borrar mis respuestas de este navegador», que borra esa clave.
+
+### Dónde viven los datos, y cómo migrarlos
+
+En esta versión los JSON están en este repositorio, en `datos/espectro/`, con el contrato `src/curia_maxima/schemas/espectro.schema.json`. `pytest` los valida. El armado del sitio los copia dentro de `datos.json` y une `posiciones.json` a las propuestas del repositorio por `id`.
+
+Quedan aquí, y no en `curia_propuestas` ni en `curia_datos`, porque son contenido de ejemplo. El esquema de una propuesta rechaza campos extra (`additionalProperties: false`), así que meter `posicion` en el front matter obliga a cambiar ese repositorio. `curia_datos` guarda series oficiales del INE; un actor ficticio no es una serie. Publicar ideología de ejemplo junto a cifras oficiales o junto al texto CC0 mezcla dos cosas que otro equipo va a reemplazar.
+
+Para migrarlos cuando ese equipo tenga el contenido real:
+
+1. **Posiciones de propuestas.** Copiar cada objeto de `datos/espectro/posiciones.json` a `curia_propuestas`, como `posiciones/<PROP-id>.json`, fuera de `propuestas/`. El validador de ese repositorio hoy solo mira los Markdown. En `sitio.py`, al leer una propuesta, si existe ese JSON se llena `posicion` y se deja de usar la entrada local de ese id. Si se prefiere el front matter, hay que ampliar `esquema/propuesta.schema.json` y quitar el `additionalProperties: false` para ese campo.
+2. **Actores.** Copiar `datos/espectro/actores.json` a `curia_datos` como `actores/*.json`, fuera de `series/`. El recolector no los escribe. Un lector nuevo en el armado del sitio los baja igual que las series. El esquema puede mudarse a `curia_datos/esquema/`.
+3. **Afirmaciones y ejes.** Son el texto del cuestionario, no el corpus cívico. Pueden quedarse en este repositorio. Si el equipo de contenido quiere versionarlos aparte, se mueven a un JSON y el armado los descarga como el resto. Hay que quitar `"ejemplo": { "const": true }` del esquema cuando el contenido deje de ser de muestra.
+
+Las fichas `PROP-2026-901` … `PROP-2026-904` no están en `curia_propuestas`. Existen para poder ordenar varias propuestas por ajuste. Cuando haya propuestas reales con posición, se borran.
+
+### Qué opina la gente
+
+La sección del sitio dice «próximamente». No hay un servidor, y las respuestas de Mi espectro no deben salir del navegador para llenar esa sección. Si más adelante se recogen opiniones, tiene que ser un canal público y separado. Tres alternativas de costo cero:
+
+1. **Pol.is** (el software libre [Polis](https://github.com/compdemocracy/polis)). La gente vota si está de acuerdo con afirmaciones y el sistema agrupa opiniones, sin un hilo de comentarios. Pros: está hecho para mostrar acuerdos y grupos, y se puede usar una instancia comunitaria o auto-hospedarlo. Contras: auto-hospedar ya no es «solo GitHub Pages» (hace falta un proceso, aunque sea un plan gratuito); una instancia de terceros recibe las opiniones; hay que moderar las afirmaciones.
+2. **Votos como issues o pull requests en un repositorio público** (por ejemplo `curia_propuestas`). Una opinión es un issue con plantilla, o un JSON en un PR. El siguiente armado del sitio cuenta esos archivos. Pros: costo cero, auditable, y encaja con el snapshot actual; no hace falta otro servicio. Contras: solo opina quien tiene cuenta de GitHub; el voto queda público en el historial de git; hay que moderar spam; no sirve para la posición privada del cuestionario y no hay que mezclarlo con ella.
+3. **Un formulario gratuito externo** (por ejemplo Framaforms). Pros: no hace falta cuenta de GitHub y no hay backend propio. Contras: las respuestas salen del navegador hacia ese servicio, así que no puede reutilizar el espectro privado y hay que decirlo; incrustarlo rompe la política de contenido actual (`default-src 'none'`) y mete a un tercero; el plan gratuito puede cambiar o cortarse.
+
+La opción que mejor respeta este sitio, si hace falta elegir una, es la de issues o archivos en un repositorio: el espectro sigue en el navegador y las opiniones públicas quedan en git, con un aviso de que son públicas.
+
+## Ajuste manual de Pages
 
 El `GITHUB_TOKEN` del workflow no puede cambiar la configuración del repositorio. Alguien con permiso de administración tiene que hacer esto una vez:
 
@@ -69,6 +126,7 @@ Esa opción aparece cuando el workflow ya está en `main`. Si el primer trabajo 
 ├── pyproject.toml
 ├── src/curia_maxima/
 │   ├── cli.py
+│   ├── espectro.py
 │   ├── sitio.py
 │   ├── hashing.py
 │   ├── store.py
@@ -76,10 +134,12 @@ Esa opción aparece cuando el workflow ya está en `main`. Si el primer trabajo 
 │   ├── collectors/
 │   │   └── ine_remuneraciones.py
 │   └── schemas/
+│       ├── espectro.schema.json
 │       ├── observation.schema.json
 │       └── series.schema.json
+├── datos/espectro/         cuestionario, actores y posiciones de ejemplo
 ├── tests/
-├── web/estaticos/          página de solo lectura (HTML, CSS y JS)
+├── web/estaticos/          página estática (HTML, CSS y JS)
 └── .github/workflows/
     ├── ci.yml              pruebas, y un armado del sitio contra los repos públicos
     └── paginas.yml         publicación en GitHub Pages
@@ -181,7 +241,7 @@ ruff check src tests
 pytest
 ```
 
-`pytest` valida los esquemas, el archivo que escribe el recolector, un cambio de formato simulado y el armado del sitio con datos de prueba. Esas pruebas no llaman al INE ni a GitHub. El flujo `.github/workflows/ci.yml` ejecuta lo mismo en cada pull request y, además, arma el sitio una vez contra los tres repositorios públicos. El cron y la publicación están solo en `paginas.yml`. No hay secretos.
+`pytest` valida los esquemas, el archivo que escribe el recolector, un cambio de formato simulado, el armado del sitio con datos de prueba y los JSON de `datos/espectro/` (cuestionario, actores, posiciones y la fórmula del índice). Esas pruebas no llaman al INE ni a GitHub. El flujo `.github/workflows/ci.yml` ejecuta lo mismo en cada pull request y, además, arma el sitio una vez contra los tres repositorios públicos. El cron y la publicación están solo en `paginas.yml`. No hay secretos.
 
 ## Licencia
 

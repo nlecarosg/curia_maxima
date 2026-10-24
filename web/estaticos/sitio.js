@@ -26,6 +26,9 @@ const TIPOS_NORMA = {
 const TIPOS_PROPUESTA = { nueva: "Nueva", "derogación": "Derogación" };
 const RELACIONES = { modifica: "Modifica", complementa: "Complementa", deroga: "Deroga", cita: "Cita" };
 const CARGOS = { diputado: "diputado", diputada: "diputada", senador: "senador", senadora: "senadora" };
+let datosSitio = null;
+let ordenPropuestas = null;
+
 const ACCIONES = {
   presentada: "presentada",
   patrocinada: "patrocinada",
@@ -435,21 +438,148 @@ function subencabezado(texto) {
   return nodo("h4", texto, "subencabezado");
 }
 
+function compararFechaPropuesta(a, b) {
+  const fechaA = String((a && a.fecha) || "");
+  const fechaB = String((b && b.fecha) || "");
+  if (fechaA !== fechaB) return fechaB.localeCompare(fechaA);
+  return String((a && a.id) || "").localeCompare(String((b && b.id) || ""));
+}
+
+function modoPropuestas() {
+  if (ordenPropuestas) return ordenPropuestas;
+  return window.espectroUI && espectroUI.hayVector() ? "ajuste" : "fecha";
+}
+
+function propuestasParaMostrar(seccion) {
+  const repo = seccion && Array.isArray(seccion.items) ? seccion.items : [];
+  const extra = window.espectroUI ? espectroUI.propuestasExtra() : [];
+  const ids = new Set(repo.map((item) => item.id));
+  return repo.concat(extra.filter((item) => item && !ids.has(item.id)));
+}
+
+function ordenarPropuestasLista(items) {
+  const modo = modoPropuestas();
+  const vectorListo = Boolean(window.espectroUI && espectroUI.hayVector());
+  return items.slice().sort((a, b) => {
+    if (modo === "ajuste" && vectorListo) {
+      const aa = espectroUI.notaAjuste(a.posicion);
+      const bb = espectroUI.notaAjuste(b.posicion);
+      if (aa != null && bb != null && aa !== bb) return bb - aa;
+      if (aa == null && bb != null) return 1;
+      if (bb == null && aa != null) return -1;
+    }
+    return compararFechaPropuesta(a, b);
+  });
+}
+
+function controlesPropuestas() {
+  const barra = document.createElement("div");
+  barra.className = "controles";
+  const etiqueta = document.createElement("label");
+  etiqueta.append(nodo("span", "Orden"));
+  const select = document.createElement("select");
+  select.id = "orden-propuestas";
+  for (const [valor, texto] of [
+    ["fecha", "Fecha, la más reciente primero"],
+    ["ajuste", "Ajuste a mi posición"],
+  ]) {
+    const opcion = document.createElement("option");
+    opcion.value = valor;
+    opcion.textContent = texto;
+    if (valor === modoPropuestas()) opcion.selected = true;
+    select.append(opcion);
+  }
+  select.addEventListener("change", () => {
+    if (select.value === "ajuste" && !(window.espectroUI && espectroUI.hayVector())) {
+      const avisoOrden = document.getElementById("aviso-orden-propuestas");
+      if (avisoOrden) {
+        avisoOrden.hidden = false;
+        avisoOrden.textContent = "Para ordenar por ajuste, primero responda Mi espectro. Sus respuestas quedan en este navegador.";
+      }
+      select.value = "fecha";
+      return;
+    }
+    ordenPropuestas = select.value;
+    if (datosSitio) renderPropuestas(datosSitio.propuestas);
+    const nuevo = document.getElementById("orden-propuestas");
+    if (nuevo) nuevo.focus();
+  });
+  etiqueta.append(select);
+  const avisoOrden = nodo("p", "", "aviso");
+  avisoOrden.id = "aviso-orden-propuestas";
+  avisoOrden.hidden = true;
+  avisoOrden.setAttribute("role", "status");
+  barra.append(etiqueta, avisoOrden);
+  return barra;
+}
+
+function invitacionEspectro() {
+  if (window.espectroUI && espectroUI.hayVector()) return null;
+  const linea = nodo("p", "", "sin-ajuste");
+  const enlace = document.createElement("a");
+  enlace.href = "#espectro";
+  enlace.textContent = "Responda Mi espectro";
+  linea.append(enlace);
+  linea.append(" para ver el índice de ajuste de cada propuesta y ordenarlas. Esas respuestas no salen de este navegador.");
+  return linea;
+}
+
+function fichaLocal(propuesta) {
+  const articulo = document.createElement("article");
+  articulo.className = "mocion";
+  articulo.id = ancla("propuesta", propuesta.id);
+  articulo.append(nodo(
+    "p",
+    "Ejemplo. Esta ficha no está en el repositorio de propuestas. No es una moción y no debe citarse como posición de Curia Máxima.",
+    "ejemplo",
+  ));
+  const cabecera = document.createElement("div");
+  cabecera.className = "tarjeta-cabecera";
+  cabecera.append(nodo("p", propuesta.id, "codigo"));
+  cabecera.append(nodo("p", etiquetaEstado(propuesta.estado), claseEstado(propuesta.estado)));
+  articulo.append(cabecera);
+  articulo.append(nodo("h3", propuesta.titulo || "Propuesta"));
+  if (window.espectroUI) articulo.append(espectroUI.bloqueAjuste(propuesta));
+  const autores = (propuesta.autores || [])
+    .map((autor) => (autor.tipo ? `${autor.nombre} (${autor.tipo})` : autor.nombre))
+    .join(", ");
+  articulo.append(definicion([
+    ["Tipo", TIPOS_PROPUESTA[propuesta.tipo] || propuesta.tipo || "—"],
+    ["Fecha", propuesta.fecha ? formatoFecha(propuesta.fecha) : "—"],
+    ["Autores", autores || "—"],
+  ]));
+  articulo.append(subencabezado("Texto de ejemplo"));
+  articulo.append(nodo("p", propuesta.resumen || ""));
+  return articulo;
+}
+
 function renderPropuestas(seccion) {
   const contenido = document.querySelector("#propuestas .contenido");
   contenido.replaceChildren();
   if (!seccion || seccion.ok === false) {
     contenido.append(aviso((seccion && seccion.aviso) || "No se pudieron cargar las propuestas."));
     if (seccion && seccion.repositorio) contenido.append(lineaRepositorio(seccion.repositorio));
-    return;
+  } else {
+    contenido.append(lineaRepositorio(seccion.repositorio));
+    if (seccion.aviso) contenido.append(nodo("p", seccion.aviso, "vacio"));
   }
-  contenido.append(lineaRepositorio(seccion.repositorio));
-  const items = Array.isArray(seccion.items) ? seccion.items : [];
+  const items = ordenarPropuestasLista(propuestasParaMostrar(seccion));
   if (!items.length) {
-    contenido.append(nodo("p", seccion.aviso || "No hay propuestas publicadas.", "vacio"));
+    if (seccion && seccion.ok !== false) {
+      contenido.append(nodo("p", seccion.aviso || "No hay propuestas publicadas.", "vacio"));
+    }
+    const erroresVacios = seccion ? listaErrores(seccion.errores) : null;
+    if (erroresVacios) contenido.append(erroresVacios);
     return;
   }
+  contenido.append(controlesPropuestas());
+  const invitacion = invitacionEspectro();
+  if (invitacion) contenido.append(invitacion);
   for (const propuesta of items) {
+    if (propuesta.origen === "ejemplo-local") {
+      contenido.append(fichaLocal(propuesta));
+      continue;
+    }
     const articulo = document.createElement("article");
     articulo.className = "mocion";
     articulo.id = ancla("propuesta", propuesta.id);
@@ -466,6 +596,7 @@ function renderPropuestas(seccion) {
     cabecera.append(nodo("p", etiquetaEstado(propuesta.estado), claseEstado(propuesta.estado)));
     articulo.append(cabecera);
     articulo.append(nodo("h3", propuesta.titulo || "Propuesta"));
+    if (window.espectroUI) articulo.append(espectroUI.bloqueAjuste(propuesta));
     const autores = (propuesta.autores || [])
       .map((autor) => (autor.tipo ? `${autor.nombre} (${autor.tipo})` : autor.nombre))
       .join(", ");
@@ -627,9 +758,32 @@ function falloGeneral(mensaje) {
   const general = document.getElementById("aviso-general");
   general.hidden = false;
   general.textContent = mensaje;
-  for (const id of ["indicadores", "propuestas", "normas"]) {
+  for (const id of ["espectro", "propuestas", "rankings", "indicadores", "normas"]) {
     const contenido = document.querySelector(`#${id} .contenido`);
-    contenido.replaceChildren(aviso(mensaje));
+    if (contenido) contenido.replaceChildren(aviso(mensaje));
+  }
+}
+
+function pintarDesdeDatos() {
+  if (!datosSitio) return;
+  const trabajos = [
+    ["espectro", "No se pudo mostrar Mi espectro.", () => {
+      if (window.espectroUI) espectroUI.renderEspectro();
+    }],
+    ["propuestas", "No se pudieron mostrar las propuestas.", () => renderPropuestas(datosSitio.propuestas)],
+    ["rankings", "No se pudieron mostrar los rankings.", () => {
+      if (window.espectroUI) espectroUI.renderRankings();
+    }],
+    ["indicadores", "No se pudieron mostrar los indicadores.", () => renderIndicadores(datosSitio.indicadores)],
+    ["normas", "No se pudieron mostrar las normas.", () => renderNormas(datosSitio.normas)],
+  ];
+  for (const [id, mensaje, pintar] of trabajos) {
+    try {
+      pintar();
+    } catch {
+      const contenido = document.querySelector(`#${id} .contenido`);
+      if (contenido) contenido.replaceChildren(aviso(mensaje));
+    }
   }
 }
 
@@ -654,19 +808,16 @@ async function main() {
     return;
   }
   anotarGeneracion(datos.generado_en);
-  const secciones = [
-    [renderIndicadores, datos.indicadores, "indicadores", "No se pudieron mostrar los indicadores."],
-    [renderPropuestas, datos.propuestas, "propuestas", "No se pudieron mostrar las propuestas."],
-    [renderNormas, datos.normas, "normas", "No se pudieron mostrar las normas."],
-  ];
-  for (const [pintar, seccion, id, mensaje] of secciones) {
-    try {
-      pintar(seccion);
-    } catch {
-      const contenido = document.querySelector(`#${id} .contenido`);
-      contenido.replaceChildren(aviso(mensaje));
-    }
+  datosSitio = datos;
+  if (window.espectroUI) {
+    espectroUI.recibir(datos.espectro || null);
+    espectroUI.alCambiar = (motivo) => {
+      if (motivo === "borrar") ordenPropuestas = "fecha";
+      if (motivo === "guardar") ordenPropuestas = "ajuste";
+      pintarDesdeDatos();
+    };
   }
+  pintarDesdeDatos();
 }
 
 main();

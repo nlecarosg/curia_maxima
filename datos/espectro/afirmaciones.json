@@ -1,0 +1,110 @@
+{
+  "schema_version": "1",
+  "ejemplo": true,
+  "cuestionario_id": "ejemplo-1",
+  "escala": [
+    { "valor": 1, "etiqueta": "Muy en desacuerdo" },
+    { "valor": 2, "etiqueta": "En desacuerdo" },
+    { "valor": 3, "etiqueta": "Ni de acuerdo ni en desacuerdo" },
+    { "valor": 4, "etiqueta": "De acuerdo" },
+    { "valor": 5, "etiqueta": "Muy de acuerdo" }
+  ],
+  "afirmaciones": [
+    {
+      "id": "ej-01",
+      "eje": "economia",
+      "sentido": 1,
+      "texto": "Los precios de los bienes básicos debería fijarlos el mercado, sin control del Estado."
+    },
+    {
+      "id": "ej-02",
+      "eje": "economia",
+      "sentido": -1,
+      "texto": "Hay que subir los impuestos a los ingresos altos para transferir dinero a los hogares de menores ingresos."
+    },
+    {
+      "id": "ej-03",
+      "eje": "economia",
+      "sentido": -1,
+      "texto": "El Estado debería limitar la concentración de empresas en alimentos, medicamentos y transporte."
+    },
+    {
+      "id": "ej-04",
+      "eje": "economia",
+      "sentido": 1,
+      "texto": "Reducir trámites para abrir un negocio importa más que agregar reglas de protección a las personas consumidoras."
+    },
+    {
+      "id": "ej-05",
+      "eje": "libertades",
+      "sentido": 1,
+      "texto": "La expresión de opiniones políticas, incluso las que incomodan, no debería tener más límite que la incitación directa a la violencia."
+    },
+    {
+      "id": "ej-06",
+      "eje": "libertades",
+      "sentido": -1,
+      "texto": "El Estado puede revisar comunicaciones privadas para prevenir delitos, aunque no haya una orden de un tribunal."
+    },
+    {
+      "id": "ej-07",
+      "eje": "libertades",
+      "sentido": 1,
+      "texto": "Las decisiones sobre el propio cuerpo y la vida familiar corresponden a la persona, no a una norma moral del Estado."
+    },
+    {
+      "id": "ej-08",
+      "eje": "libertades",
+      "sentido": -1,
+      "texto": "Las manifestaciones en la calle deberían autorizarse solo en lugares y horarios fijados de antemano."
+    },
+    {
+      "id": "ej-09",
+      "eje": "estado",
+      "sentido": 1,
+      "texto": "La salud y la educación escolar deberían ser provistas sobre todo por el Estado, con un rol menor de prestadores privados."
+    },
+    {
+      "id": "ej-10",
+      "eje": "estado",
+      "sentido": -1,
+      "texto": "Las pensiones deberían depender principalmente del ahorro individual, no de un fondo común financiado con impuestos."
+    },
+    {
+      "id": "ej-11",
+      "eje": "estado",
+      "sentido": 1,
+      "texto": "El cuidado de niños, niñas y personas mayores dependientes es una responsabilidad pública, no solo de las familias."
+    },
+    {
+      "id": "ej-12",
+      "eje": "estado",
+      "sentido": -1,
+      "texto": "El Estado debería concentrarse en seguridad y justicia, y dejar el resto a personas y organizaciones privadas."
+    },
+    {
+      "id": "ej-13",
+      "eje": "territorio",
+      "sentido": 1,
+      "texto": "Regiones y municipios deberían decidir impuestos y servicios locales sin pedir permiso al nivel nacional."
+    },
+    {
+      "id": "ej-14",
+      "eje": "territorio",
+      "sentido": -1,
+      "texto": "Las normas importantes tienen que ser iguales en todo el país; la autonomía local genera desigualdad."
+    },
+    {
+      "id": "ej-15",
+      "eje": "territorio",
+      "sentido": 1,
+      "texto": "Las comunas, y no un ministerio, deberían asignar el presupuesto de las obras locales."
+    },
+    {
+      "id": "ej-16",
+      "eje": "territorio",
+      "sentido": -1,
+      "texto": "En una crisis, el gobierno nacional debería poder reemplazar las decisiones de alcaldes y gobernadores regionales."
+    }
+  ]
+}

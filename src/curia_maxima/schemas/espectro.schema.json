@@ -1,0 +1,278 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:curia-maxima:schema:espectro:1",
+  "title": "Espectro de ejemplo",
+  "description": "Contrato de los JSON de ejemplo del cuestionario, las posiciones y los actores. El contenido real lo define otro equipo; mientras tanto ejemplo es obligatorio.",
+  "$defs": {
+    "coordenadas": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["economia", "libertades", "estado", "territorio"],
+      "properties": {
+        "economia": {
+          "type": "number",
+          "minimum": -1,
+          "maximum": 1,
+          "description": "−1 más redistribución y regulación; +1 más mercado."
+        },
+        "libertades": {
+          "type": "number",
+          "minimum": -1,
+          "maximum": 1,
+          "description": "−1 más orden y límites; +1 más libertades civiles."
+        },
+        "estado": {
+          "type": "number",
+          "minimum": -1,
+          "maximum": 1,
+          "description": "−1 Estado acotado; +1 Estado de servicios amplios."
+        },
+        "territorio": {
+          "type": "number",
+          "minimum": -1,
+          "maximum": 1,
+          "description": "−1 nivel nacional; +1 regiones y comunas."
+        }
+      }
+    },
+    "ejes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "ejemplo",
+        "cuestionario_id",
+        "nota",
+        "formula_frase",
+        "formula_detalle",
+        "ejes"
+      ],
+      "properties": {
+        "schema_version": { "const": "1" },
+        "ejemplo": { "const": true },
+        "cuestionario_id": { "type": "string", "pattern": "^ejemplo-[0-9]+$" },
+        "nota": { "type": "string", "minLength": 20, "maxLength": 400 },
+        "formula_frase": { "type": "string", "minLength": 40, "maxLength": 280 },
+        "formula_detalle": { "type": "string", "minLength": 40, "maxLength": 500 },
+        "ejes": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "nombre", "polo_negativo", "polo_positivo", "explicacion"],
+            "properties": {
+              "id": {
+                "type": "string",
+                "enum": ["economia", "libertades", "estado", "territorio"]
+              },
+              "nombre": { "type": "string", "minLength": 3, "maxLength": 40 },
+              "polo_negativo": { "type": "string", "minLength": 3, "maxLength": 48 },
+              "polo_positivo": { "type": "string", "minLength": 3, "maxLength": 48 },
+              "explicacion": { "type": "string", "minLength": 40, "maxLength": 400 }
+            }
+          }
+        }
+      }
+    },
+    "afirmaciones": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "ejemplo", "cuestionario_id", "escala", "afirmaciones"],
+      "properties": {
+        "schema_version": { "const": "1" },
+        "ejemplo": { "const": true },
+        "cuestionario_id": { "type": "string", "pattern": "^ejemplo-[0-9]+$" },
+        "escala": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["valor", "etiqueta"],
+            "properties": {
+              "valor": { "type": "integer", "minimum": 1, "maximum": 5 },
+              "etiqueta": { "type": "string", "minLength": 3, "maxLength": 48 }
+            }
+          }
+        },
+        "afirmaciones": {
+          "type": "array",
+          "minItems": 15,
+          "maxItems": 20,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "eje", "sentido", "texto"],
+            "properties": {
+              "id": { "type": "string", "pattern": "^ej-[0-9]{2}$" },
+              "eje": {
+                "type": "string",
+                "enum": ["economia", "libertades", "estado", "territorio"]
+              },
+              "sentido": { "enum": [-1, 1] },
+              "texto": { "type": "string", "minLength": 20, "maxLength": 280 }
+            }
+          }
+        }
+      }
+    },
+    "actores": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "ejemplo", "nota", "actores"],
+      "properties": {
+        "schema_version": { "const": "1" },
+        "ejemplo": { "const": true },
+        "nota": { "type": "string", "minLength": 20, "maxLength": 400 },
+        "actores": {
+          "type": "array",
+          "minItems": 4,
+          "items": { "$ref": "#/$defs/actor" }
+        }
+      }
+    },
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "nombre",
+        "tipo",
+        "ejemplo",
+        "resumen",
+        "temas",
+        "actividad",
+        "posicion"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "nombre": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 60,
+          "pattern": "ejemplo",
+          "description": "Nombre genérico. Tiene que incluir la palabra ejemplo, en minúscula."
+        },
+        "tipo": { "enum": ["bot", "figura"] },
+        "ejemplo": { "const": true },
+        "resumen": {
+          "type": "string",
+          "minLength": 20,
+          "maxLength": 300,
+          "pattern": "ejemplo"
+        },
+        "temas": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 5,
+          "items": { "type": "string", "minLength": 3, "maxLength": 40 }
+        },
+        "actividad": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Participación ficticia, de 0 a 100. No es una medición."
+        },
+        "posicion": { "$ref": "#/$defs/coordenadas" }
+      }
+    },
+    "posiciones": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "ejemplo", "nota", "posiciones"],
+      "properties": {
+        "schema_version": { "const": "1" },
+        "ejemplo": { "const": true },
+        "nota": { "type": "string", "minLength": 20, "maxLength": 400 },
+        "posiciones": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["propuesta_id", "ejemplo", "posicion"],
+            "properties": {
+              "propuesta_id": {
+                "type": "string",
+                "pattern": "^PROP-[0-9]{4}-[0-9]{3,}$"
+              },
+              "ejemplo": { "const": true },
+              "comentario": { "type": "string", "minLength": 10, "maxLength": 280 },
+              "posicion": { "$ref": "#/$defs/coordenadas" }
+            }
+          }
+        }
+      }
+    },
+    "propuestasEjemplo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "ejemplo", "nota", "propuestas"],
+      "properties": {
+        "schema_version": { "const": "1" },
+        "ejemplo": { "const": true },
+        "nota": { "type": "string", "minLength": 20, "maxLength": 400 },
+        "propuestas": {
+          "type": "array",
+          "minItems": 3,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "titulo",
+              "tipo",
+              "estado",
+              "autores",
+              "fecha",
+              "ejemplo",
+              "resumen",
+              "posicion"
+            ],
+            "properties": {
+              "id": { "type": "string", "pattern": "^PROP-[0-9]{4}-[0-9]{3,}$" },
+              "titulo": {
+                "type": "string",
+                "minLength": 10,
+                "maxLength": 180,
+                "pattern": "^EJEMPLO"
+              },
+              "tipo": { "enum": ["nueva", "derogación"] },
+              "estado": { "enum": ["borrador", "publicada", "adoptada", "retirada"] },
+              "autores": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["nombre", "tipo"],
+                  "properties": {
+                    "nombre": {
+                      "type": "string",
+                      "minLength": 8,
+                      "maxLength": 80,
+                      "pattern": "ejemplo"
+                    },
+                    "tipo": { "enum": ["bot", "persona"] }
+                  }
+                }
+              },
+              "fecha": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+              "ejemplo": { "const": true },
+              "resumen": {
+                "type": "string",
+                "minLength": 20,
+                "maxLength": 400,
+                "pattern": "ejemplo"
+              },
+              "posicion": { "$ref": "#/$defs/coordenadas" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

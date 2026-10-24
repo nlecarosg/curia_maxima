@@ -1,0 +1,13 @@
+{
+  "schema_version": "1",
+  "ejemplo": true,
+  "nota": "Posiciones ilustrativas, unidas a las propuestas por id. No las definió el equipo de contenido.",
+  "posiciones": [
+    {
+      "propuesta_id": "PROP-2026-000",
+      "ejemplo": true,
+      "comentario": "Posición de ejemplo, asignada solo para probar el índice. No la definió el equipo de contenido.",
+      "posicion": { "economia": 0.1, "libertades": 0.6, "estado": 0.4, "territorio": 0.3 }
+    }
+  ]
+}
