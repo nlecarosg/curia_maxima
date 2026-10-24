@@ -1,0 +1,65 @@
+# Publica el sitio de solo lectura en GitHub Pages.
+# El GITHUB_TOKEN de este trabajo es el token automático: no es un secreto
+# guardado en el repositorio. Solo se usa para leer la API pública y no se
+# escribe en el sitio. No puede cambiar Settings → Pages.
+name: Publicar el sitio
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    # curia_datos se actualiza a las 12:00 UTC. Esta hora le deja margen.
+    - cron: "15 13 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  construir:
+    name: Armar la página
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Obtener el código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar el armado del sitio
+        run: python -m pip install -e ".[sitio]"
+
+      - name: Preparar Pages
+        uses: actions/configure-pages@v5
+
+      - name: Reunir datos y escribir el sitio
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python -m curia_maxima.sitio --salida _sitio
+
+      - name: Subir el sitio
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _sitio
+
+  desplegar:
+    name: Desplegar en Pages
+    needs: construir
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publicar
+        id: deployment
+        uses: actions/deploy-pages@v4
